@@ -2,7 +2,7 @@
 public class Main {
 	
 	public Tapis tapis;
-	public int cpt;
+	public volatile int cpt;
 	
 	public Main(int c, int cpt) {
 		this.tapis=new Tapis(c);
@@ -28,13 +28,18 @@ public class Main {
 	
 	
 	public static void main(String[] args) {
-		int n = 2;
-		int x = 50;
-		int m = 2;
 		
-		System.out.println("coucou");
+		//NOMBRE DE THREAD PRODUCTEUR
+		int n = 5;
 		
-		Main main = new Main(10, n*x);
+		//CIBLE DE RPODUCTION
+		int x = 55;
+		
+		//NOMBRE DE THREAD CONSOMATEUR
+		int m = 5;
+		
+		
+		Main main = new Main(20, n*x);
 		
 		for(int i=0; i<n; i++) {
 			final int j = i;
