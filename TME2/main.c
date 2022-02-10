@@ -23,21 +23,15 @@ struct Journal {
 struct Journal* create_journal(size_t capacity) {
     struct Journal* journal = malloc(sizeof(struct Journal));
 
-    journal->first = 0;
-    journal->last = 0;
     journal->msg = malloc(sizeof(char*) * PRODUCTEURS*CIBLE_PRODUCTION);
 
     return journal;
 
 }
 
-void put_messager(struct Tapis* tapis, struct Journal journal){
+void put_messager(struct Packet* packet, struct Journal journal){
 
-	for(size_t i=0 ; i<=tapis->last; i++){
-		journal->msg[i]=tapis->packets[i]->msg;
-	}
-	journal->first=tapis->first;
-	journal->last=tapis->last;
+	journal.msg=packet->msg;
 }
 
 void take_messager(struct Tapis* tapis, struct Journal journal){
@@ -54,8 +48,8 @@ static void* production(void* arg) {
 }
 
 ft_thread_t create_producteur(const char* name, ft_scheduler_t sched) {
-    ft_thread_t thread = ft_thread_create(NULL, NULL, NULL);
-    printf(name);
+    ft_thread_t thread = ft_thread_create(sched, production, NULL, name);
+    printf("%s", name);
     return thread;
 }
 
@@ -70,8 +64,8 @@ static void* consommation(void* arg) {
 ft_thread_t create_consommateur(int id, ft_scheduler_t sched) {
     int* id_m = malloc(sizeof(int));
     *id_m = id;
-    ft_thread_t thread = ft_thread_create(NULL, NULL, NULL);
-    printf(id);
+    ft_thread_t thread = ft_thread_create(sched, consommation, NULL, id);
+    printf("%i", id);
     return thread;
 }
 
