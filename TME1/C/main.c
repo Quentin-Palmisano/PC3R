@@ -1,27 +1,18 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <pthread.h>
+#include "tapis.h"
 
 #define PROD_TARGET 10
 #define CONS_TARGET 100
+#define CAPACITY 10
 
-struct Packet {
-    char* msg;
-};
-
-struct Tapis {
-    struct Tapis* tapiss;
-};
-
-void create_tapis(struct Tapis* tapis) {
-    
-}
 
 struct Counter {
     int c;
 };
 
-static struct Tapis tapis;
+static struct Tapis* tapis_principal;
 
 static void* production(void* arg) {
     const char* name = (const char*) arg;
@@ -53,6 +44,10 @@ pthread_t create_consommateur(int id) {
 
 
 int main(int argc, char *argv[]) {
+    
+    tapis_principal = create_tapis(CAPACITY);
+    
+    
     
     create_producteur("Banane");
     
