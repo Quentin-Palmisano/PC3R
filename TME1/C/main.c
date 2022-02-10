@@ -1,21 +1,54 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <pthread.h>
+#include <string.h>
 #include "tapis.h"
 
 #define PROD_TARGET 10
-#define CONS_TARGET 100
+#define NUM_PROD 10
+#define NUM_CONS 10
 #define CAPACITY 10
 
 
+static struct Tapis tapis_principal;
+
 struct Counter {
-    int c;
+    int remaining;
 };
 
-static struct Tapis* tapis_principal;
+void init_counter(struct Counter* counter, size_t value) {
+    counter->remaining = value;
+}
+
+static struct Counter counter;
 
 static void* production(void* arg) {
-    const char* name = (const char*) arg;
+    char* name = (char*) arg;
+    
+    for(int i = 0; i<PROD_TARGET; i++) {
+        struct Packet* packet = malloc(sizeof(struct Packet));
+        packet->msg = malloc(strlen(name) + 10);
+        sprintf(packet->msg, "%s %i", name, i+1);
+        put_tapis(&tapis_principal, packet);
+    }
+    
+    free(name);
+    
+    return NULL;
+}
+
+static void* consommation(void* arg) {
+    int* id_m = (int*) arg;
+    int id = *id_m;
+    free(id_m);
+    
+    while(counter.remaining > 0) {
+        counter.remaining--;
+        
+        struct Packet* packet = take_tapis(&tapis_principal);
+        printf("C%i mange %s\n", id, packet->msg);
+        free(packet);
+    }
     
     return NULL;
 }
@@ -24,14 +57,6 @@ pthread_t create_producteur(const char* name) {
     pthread_t thread;
     pthread_create(&thread, NULL, &production, (void*) name);
     return thread;
-}
-
-static void* consommation(void* arg) {
-    int* id_m = (int*) arg;
-    int id = *id_m;
-    free(id_m);
-    
-    return NULL;
 }
 
 pthread_t create_consommateur(int id) {
@@ -45,13 +70,25 @@ pthread_t create_consommateur(int id) {
 
 int main(int argc, char *argv[]) {
     
-    tapis_principal = create_tapis(CAPACITY);
+    create_tapis(&tapis_principal, CAPACITY);
+    
+    init_counter(&counter, NUM_PROD * PROD_TARGET);
     
     
+    pthread_t threads[NUM_PROD + NUM_CONS];
+    for(int i = 0; i<NUM_PROD; i++) {
+        char* name = malloc(128);
+        sprintf(name, "P%i", i);
+        threads[i] = create_producteur(name);
+    }
     
-    create_producteur("Banane");
+    for(int i = 0; i<NUM_CONS; i++) {
+        threads[NUM_PROD + i] = create_consommateur(i);
+    }
     
-    create_consommateur(1);
+    for(int i = 0; i<NUM_PROD + NUM_CONS; i++) {
+        pthread_join(threads[i], NULL);
+    }
     
     return 0;
 }

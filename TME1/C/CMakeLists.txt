@@ -2,7 +2,7 @@ cmake_minimum_required(VERSION 3.0)
 
 project(tme1 LANGUAGES C)
 
-add_executable(tme1 main.c)
+add_executable(tme1 main.c tapis.c)
 
 set(THREADS_PREFER_PTHREAD_FLAG ON)
 find_package(Threads REQUIRED)
