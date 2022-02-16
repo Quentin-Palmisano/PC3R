@@ -1,7 +1,6 @@
 #include "tapis.h"
 
-struct Tapis* create_tapis(size_t capacity) {
-    struct Tapis* tapis = malloc(sizeof(struct Tapis));
+struct Tapis* create_tapis(struct Tapis* tapis, size_t capacity) {
     
     tapis->first = 0;
     tapis->last = 0;

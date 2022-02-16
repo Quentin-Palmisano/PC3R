@@ -18,7 +18,7 @@ struct Tapis {
 	ft_scheduler_t sched;
 };
 
-struct Tapis* create_tapis(size_t capacity);
+struct Tapis* create_tapis(struct Tapis* tapis, size_t capacity);
 
 void put_tapis(struct Tapis* tapis, struct Packet* packet);
 
