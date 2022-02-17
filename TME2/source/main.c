@@ -1,23 +1,14 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
+#include <unistd.h>
 #include "fthread.h"
 
 #define PROD_TARGET 10
-#define NUM_PROD 10
-#define NUM_CONS 10
-#define NUM_MSG 10
+#define NUM_PROD 1
+#define NUM_CONS 1
+#define NUM_MSG 1
 #define CAPACITY 10
-
-
-static struct Counter counter;
-static struct Tapis tapis_producteur;
-static struct Tapis tapis_consommateur;
-static struct Journal journal_producteur;
-static struct Journal journal_consommateur;
-static struct Journal journal_trajet;
-
-
 
 struct Packet {
 	char* msg;
@@ -30,7 +21,25 @@ struct Tapis {
 	size_t capacity;
 	struct Packet** packets;
 	ft_scheduler_t sched;
+	ft_event_t put_event;
+	ft_event_t take_event;
 };
+
+struct Journal {
+	size_t size;
+	struct Packet** packets;
+};
+
+static struct Counter counter;
+static struct Tapis tapis_producteur;
+static struct Tapis tapis_consommateur;
+static struct Journal journal_producteur;
+static struct Journal journal_consommateur;
+static struct Journal journal_trajet;
+
+void check_err(int err) {
+	if(err != 0) printf("Error : %i\n", err);
+}
 
 struct Tapis* create_tapis(struct Tapis* tapis, size_t capacity) {
 
@@ -40,6 +49,8 @@ struct Tapis* create_tapis(struct Tapis* tapis, size_t capacity) {
     tapis->capacity = capacity;
     tapis->packets = malloc(sizeof(struct Packet*) * capacity);
     tapis->sched = ft_scheduler_create();
+    tapis->put_event = ft_event_create(tapis->sched);
+    tapis->take_event = ft_event_create(tapis->sched);
 
     return tapis;
 
@@ -47,31 +58,33 @@ struct Tapis* create_tapis(struct Tapis* tapis, size_t capacity) {
 
 void put_tapis(struct Tapis* tapis, struct Packet* packet) {
 
-    if(tapis->size < tapis->capacity) {
-        tapis->packets[tapis->last] = packet;
-        tapis->last = (tapis->last + 1) % tapis->capacity;
-        tapis->size++;
+    while(tapis->size == tapis->capacity) {
+    	check_err(ft_thread_await(tapis->take_event));
     }
+
+    tapis->packets[tapis->last] = packet;
+	tapis->last = (tapis->last + 1) % tapis->capacity;
+	tapis->size++;
+
+	check_err(ft_thread_generate(tapis->put_event));
 
 }
 
 struct Packet* take_tapis(struct Tapis* tapis) {
 
-    if(tapis->size > 0) {
-        struct Packet* ret = tapis->packets[tapis->first];
-        tapis->first = (tapis->first + 1) % tapis->capacity;
-        tapis->size--;
-        return ret;
+    while(tapis->size == 0) {
+    	check_err(ft_thread_await(tapis->put_event));
     }
 
-    return NULL;
+    struct Packet* ret = tapis->packets[tapis->first];
+	tapis->first = (tapis->first + 1) % tapis->capacity;
+	tapis->size--;
+
+	check_err(ft_thread_generate(tapis->take_event));
+
+	return ret;
 }
 
-
-struct Journal {
-	size_t size;
-	struct Packet** packets;
-};
 
 void create_journal(struct Journal* journal) {
 
@@ -115,12 +128,13 @@ void production(void* arg) {
         packet->msg = malloc(strlen(name) + 10);
         sprintf(packet->msg, "%s %i", name, i+1);
         put_tapis(&tapis_producteur, packet);
+        check_err(ft_thread_cooperate());
     }
     free(name);
-    ft_thread_cooperate();
 }
 
 void consommation(void* arg) {
+
     int* id_m = (int*) arg;
     int id = *id_m;
     free(id_m);
@@ -131,30 +145,32 @@ void consommation(void* arg) {
         struct Packet* packet = take_tapis(&tapis_consommateur);
         printf("C%i mange %s\n", id, packet->msg);
         free(packet);
-        ft_thread_cooperate();
+        check_err(ft_thread_cooperate());
     }
+
+    printf("cons end");
 }
 
-void messager() {
+void messager(void* args) {
 
     while(counter.remaining > 0) {
-    	ft_thread_link(tapis_producteur.sched);
         struct Packet* packet = take_tapis(&tapis_producteur);
         if(packet!=NULL){
         	put_messager(&journal_trajet, packet);
-        	ft_thread_unlink();
-        	ft_thread_link(tapis_consommateur.sched);
-        	if(tapis_consommateur.size < tapis_consommateur.capacity){
-        		put_tapis(&tapis_consommateur, packet);
-            	ft_thread_unlink();
-                free(packet);
-        	}
+        	check_err(ft_thread_unlink());
+        	check_err(ft_thread_link(tapis_consommateur.sched));
+			put_tapis(&tapis_consommateur, packet);
+			check_err(ft_thread_unlink());
+			free(packet);
+        	check_err(ft_thread_link(tapis_producteur.sched));
         }
     }
 }
 
 ft_thread_t create_producteur(const char* name, ft_scheduler_t sched) {
     ft_thread_t thread = ft_thread_create(sched, production, NULL, (void*) name);
+
+    if(thread == NULL) printf("NULLPROD");
     return thread;
 }
 
@@ -162,14 +178,15 @@ ft_thread_t create_consommateur(int id, ft_scheduler_t sched) {
     int* id_m = malloc(sizeof(int));
     *id_m = id;
     ft_thread_t thread = ft_thread_create(sched, consommation, NULL, (void*) id_m);
+    if(thread == NULL) printf("NULLCONS");
     return thread;
 }
 
-ft_thread_t create_messager() {
-    ft_thread_t thread = ft_thread_create(NULL, messager, NULL, NULL);
+ft_thread_t create_messager(ft_scheduler_t sched) {
+    ft_thread_t thread = ft_thread_create(sched, messager, NULL, NULL);
+    if(thread == NULL) printf("NULLMESS");
     return thread;
 }
-
 
 int main(int argc, char *argv[]) {
 
@@ -181,8 +198,11 @@ int main(int argc, char *argv[]) {
 
     init_counter(&counter, NUM_PROD * PROD_TARGET);
 
+    ft_thread_t threads[NUM_PROD + NUM_CONS + NUM_MSG];
+    for(int i = 0; i<NUM_PROD + NUM_CONS + NUM_MSG; i++) {
+		threads[i] = NULL;
+	}
 
-    ft_thread_t threads[NUM_PROD + NUM_CONS];
     for(int i = 0; i<NUM_PROD; i++) {
         char* name = malloc(128);
         sprintf(name, "P%i", i);
@@ -190,19 +210,22 @@ int main(int argc, char *argv[]) {
     }
 
     for(int i = 0; i<NUM_MSG; i++) {
-            threads[NUM_PROD + i] = create_messager();
-        }
+		threads[NUM_PROD + i] = create_messager(tapis_producteur.sched);
+	}
 
     for(int i = 0; i<NUM_CONS; i++) {
         threads[NUM_PROD + NUM_MSG + i] = create_consommateur(i,tapis_consommateur.sched);
     }
 
-    ft_scheduler_start(tapis_producteur.sched);
-    ft_scheduler_start(tapis_consommateur.sched);
 
+    check_err(ft_scheduler_start(tapis_producteur.sched));
+    check_err(ft_scheduler_start(tapis_consommateur.sched));
+
+    printf("ft_thread_join renvoie une erreur EBADCREATE, et n'attends pas\n");
 
     for(int i = 0; i<NUM_PROD + NUM_CONS + NUM_MSG; i++) {
-        ft_thread_join(threads[i]);
+
+    	check_err(ft_thread_join(threads[i]));
     }
 
     return 0;
