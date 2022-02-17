@@ -1,0 +1,45 @@
+Warning: can't open /opt/tpsi/prod/sncfivs/centralarchive/20220207-030257_14049_Data_Package/hafas/mapping-nsr.txt
+Info   : Starting conversion (Revision: 1.85 , Date: 2021/12/06 18:01:41 )
+Info   : Reading 5.40 data
+Info   : command line parameters:
+Info   :   -i/opt/tpsi/prod/sncfivs/centralarchive/20220207-030257_14049_Data_Package/hafas
+Info   :   -o/opt/tpsi/prod/sncfivs/centralarchive/20220207-030257_14049_Data_Package/netex
+Info   :   -fnetex.cfg
+Info   :   -varianteSNCF
+Info   :   -infotext/opt/tpsi/prod/sncfivs/centralarchive/20220207-030257_14049_Data_Package/hafas/infotext
+Info   :   -infotext/opt/tpsi/prod/sncfivs/centralarchive/20220207-030257_14049_Data_Package/hafas/infotextCorrespondances
+Info   :   -infotext/opt/tpsi/prod/sncfivs/centralarchive/20220207-030257_14049_Data_Package/hafas/infotextReflignes
+Info   :   -infotext/opt/tpsi/prod/sncfivs/centralarchive/20220207-030257_14049_Data_Package/hafas/infotextTopoinfo
+Info   : Reading netex.cfg
+Info   : codespace <FR> http://www.sncf.fr
+Info   : Reading /opt/tpsi/prod/sncfivs/centralarchive/20220207-030257_14049_Data_Package/hafas/bahnhof
+Info   : Reading /opt/tpsi/prod/sncfivs/centralarchive/20220207-030257_14049_Data_Package/hafas/bfkoord
+Info   : Reading /opt/tpsi/prod/sncfivs/centralarchive/20220207-030257_14049_Data_Package/hafas/metabhf
+Info   : Reading /opt/tpsi/prod/sncfivs/centralarchive/20220207-030257_14049_Data_Package/hafas/infotext
+Info   : Reading /opt/tpsi/prod/sncfivs/centralarchive/20220207-030257_14049_Data_Package/hafas/infotextCorrespondances
+Info   : Reading /opt/tpsi/prod/sncfivs/centralarchive/20220207-030257_14049_Data_Package/hafas/infotextReflignes
+Info   : Reading /opt/tpsi/prod/sncfivs/centralarchive/20220207-030257_14049_Data_Package/hafas/infotextTopoinfo
+Info   : Reading /opt/tpsi/prod/sncfivs/centralarchive/20220207-030257_14049_Data_Package/hafas/bhfart
+Info   : Reading /opt/tpsi/prod/sncfivs/centralarchive/20220207-030257_14049_Data_Package/hafas/attribut
+Info   : Reading /opt/tpsi/prod/sncfivs/centralarchive/20220207-030257_14049_Data_Package/hafas/linie
+Info   : Reading /opt/tpsi/prod/sncfivs/centralarchive/20220207-030257_14049_Data_Package/hafas/eckdaten
+Info   : Reading /opt/tpsi/prod/sncfivs/centralarchive/20220207-030257_14049_Data_Package/hafas/bitfield
+Info   : Reading /opt/tpsi/prod/sncfivs/centralarchive/20220207-030257_14049_Data_Package/hafas/richtung
+Info   : Reading /opt/tpsi/prod/sncfivs/centralarchive/20220207-030257_14049_Data_Package/hafas/betrieb
+Info   : Reading /opt/tpsi/prod/sncfivs/centralarchive/20220207-030257_14049_Data_Package/hafas/gleise
+Info   : Reading /opt/tpsi/prod/sncfivs/centralarchive/20220207-030257_14049_Data_Package/hafas/durchbi
+Info   : Reading /opt/tpsi/prod/sncfivs/centralarchive/20220207-030257_14049_Data_Package/hafas/umsteigl
+Info   : Reading /opt/tpsi/prod/sncfivs/centralarchive/20220207-030257_14049_Data_Package/hafas/umsteigz
+Info   : Reading /opt/tpsi/prod/sncfivs/centralarchive/20220207-030257_14049_Data_Package/hafas/umstfwz
+Info   : Reading /opt/tpsi/prod/sncfivs/centralarchive/20220207-030257_14049_Data_Package/hafas/vereinig_vt
+Info   : Reading /opt/tpsi/prod/sncfivs/centralarchive/20220207-030257_14049_Data_Package/hafas/fplansncf
+Error  : not well-formed (invalid token) (<XI t="RefLignes_portail_ligne"><P n="id" v="FR:Line::19ea029b-6782-421a-8481-7470f5718e47:" /><P n="ResponsibilitySetRef" v="FR:ResponsibilitySet::109AD33E-CFD6-46CC-BA4E-0EFA284A0EB7:" /><P n="alternativeName" v="Lux/Alsace/Loraine Ã¢€“ Paca" /><P n="TransportMode" v="rail" /><P n="Name" v="071A" /><P n="OperatorRef" v="FR:Operator::07B82396-04B1-48F0-84BF-36C7F1B81442:" /><P n="GroupOfLinesId" v="FR:GroupOfLines::add29dd9-3c06-4761-b5ff-751ca1516ba5:" /><P n="GroupOfLinesName" v="RHIN-RHONE" /><P n="NetworkId" v="FR:Network::0128dbd0-8448-48b0-bbdf-1b3c68856193:" /><P n="NetworkName" v="Est" /><P n="PrivateCode" v="071100" /></XI>)
+Error  : not well-formed (invalid token) (<XI t="RefLignes_portail_ligne"><P n="id" v="FR:Line::297ec911-6fdb-4544-9c77-12ea9183d1b1:" /><P n="ResponsibilitySetRef" v="FR:ResponsibilitySet::d2ecc4f8-b4c7-4900-ae81-e4f60290b2d4:" /><P n="alternativeName" v="STRASBOURG - BÂLE" /><P n="TransportMode" v="rail" /><P n="TransportSubMode" v="regionalRail" /><P n="Name" v="K200" /><P n="OperatorRef" v="FR:Operator::07B82396-04B1-48F0-84BF-36C7F1B81442:" /><P n="PresentationColour" v="#bf005f" /><P n="PresentationTextColour" v="#ffffff" /><P n="GroupOfLinesId" v="FR:GroupOfLines::049D304C-A3E4-4B5F-9621-B5ECE7B9F105:" /><P n="GroupOfLinesName" v="KRONO" /><P n="NetworkId" v="FR:Network::FF4A8843-94BF-4E4E-9572-8EC852C23F03:" /><P n="NetworkName" v="TER Grand-Est" /></XI>)
+Error  : not well-formed (invalid token) (<XI t="RefLignes_portail_ligne"><P n="id" v="FR:Line::4FA25873-A63A-4A2D-B62F-EF950E45D8A9:" /><P n="ResponsibilitySetRef" v="FR:ResponsibilitySet::109AD33E-CFD6-46CC-BA4E-0EFA284A0EB7:" /><P n="alternativeName" v="Lux/Alsace/Loraine Ã¢€“ LR" /><P n="TransportMode" v="rail" /><P n="Name" v="071B" /><P n="OperatorRef" v="FR:Operator::07B82396-04B1-48F0-84BF-36C7F1B81442:" /><P n="GroupOfLinesId" v="FR:GroupOfLines::add29dd9-3c06-4761-b5ff-751ca1516ba5:" /><P n="GroupOfLinesName" v="RHIN-RHONE" /><P n="NetworkId" v="FR:Network::0128dbd0-8448-48b0-bbdf-1b3c68856193:" /><P n="NetworkName" v="Est" /><P n="PrivateCode" v="071200" /></XI>)
+Error  : not well-formed (invalid token) (<XI t="RefLignes_portail_ligne"><P n="id" v="FR:Line::7fd9ad51-56f2-4a7f-88fd-210b32486659:" /><P n="ResponsibilitySetRef" v="FR:ResponsibilitySet::670bc0a3-831c-4327-bd8a-c3ddf87a7021:" /><P n="alternativeName" v="Car Motteville - Rouen " /><P n="TransportMode" v="coach" /><P n="TransportSubMode" v="regionalCoach" /><P n="Name" v="P101" /><P n="OperatorRef" v="FR:Operator::07B82396-04B1-48F0-84BF-36C7F1B81442:" /><P n="PresentationColour" v="#006600" /><P n="PresentationTextColour" v="#ffffff" /><P n="GroupOfLinesId" v="FR:GroupOfLines::955E5BD8-2B43-4F47-AD7B-FC53460AC47E:" /><P n="GroupOfLinesName" v="PROXI" /><P n="NetworkId" v="FR:Network::51309BCB-E446-4067-8DD0-F3AC0A632EAA:" /><P n="NetworkName" v="TER Normandie" /></XI>)
+Error  : not well-formed (invalid token) (<XI t="Topographic"><P n="id" v="074ff130-a6d3-11e8-a96c-79e7e7f6c8c0" /><P n="name" v="Faÿ-lÃ¨s-Nemours" /><P n="privateCode" v="77178" /><P n="placeType" v="city" /><P n="topographicType" v="city" /><P n="country" v="FR" /><P n="parent" v="24a07aa2-a6d2-11e8-9af9-858d28165ba6" /><P n="keyLists_CodePostal" v="77167" /><P n="keyLists_CodeINSEE" v="77178" /></XI>)
+Error  : not well-formed (invalid token) (<XI t="Topographic"><P n="id" v="0d910c00-a6d3-11e8-a96c-79e7e7f6c8c0" /><P n="name" v="L'Haÿ-les-Roses" /><P n="privateCode" v="94038" /><P n="placeType" v="city" /><P n="topographicType" v="city" /><P n="country" v="FR" /><P n="parent" v="24a07aa8-a6d2-11e8-9af9-858d28165ba6" /><P n="keyLists_CodePostal" v="94240" /><P n="keyLists_CodeINSEE" v="94038" /><P n="containedIn" v="MÃ©tropole du Grand Paris" /></XI>)
+Error  : not well-formed (invalid token) (<XI t="Topographic"><P n="id" v="f73db703-a6d2-11e8-a96c-79e7e7f6c8c0" /><P n="name" v="Moÿ-de-l'Aisne" /><P n="privateCode" v="02532" /><P n="placeType" v="city" /><P n="topographicType" v="city" /><P n="country" v="FR" /><P n="parent" v="24a05371-a6d2-11e8-9af9-858d28165ba6" /><P n="keyLists_CodePostal" v="02610" /><P n="keyLists_CodeINSEE" v="02532" /></XI>)
+Info   : Writing sncf_netexfr_20220207_0303.xml
+Info   : Start: Mon Feb  7 03:03:01 2022
+Info   : End :  Mon Feb  7 03:05:04 2022
