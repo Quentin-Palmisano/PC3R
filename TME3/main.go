@@ -1,93 +1,85 @@
 package main
+
 import (
-    "bufio"
-    "fmt"
-    "log"
-    "os"
+	"bufio"
+	"fmt"
+	"log"
+	"os"
+	"strings"
+	"time"
 )
 
 const TRAVAILLEURS int = 10
 
-type horaire struct {
-	heure int
-	minute int
-	seconde int
-}
-
-func newHoraire(heure int, minute int, seconde int) *horaire {
-
-    h := horaire{}
-    h.heure = heure
-	h.minute = minute
-	h.seconde = seconde
-    return &h
-}
-
 type paquet struct {
-    arrivee horaire
-    depart horaire
-	arret horaire
+	arrivee string
+	depart  string
+	arret   int
 }
 
-func newPaquet(arrivee horaire, depart horaire) *paquet {
-
-    p := paquet{}
-    p.arrivee = arrivee
-	p.depart = depart
-	p.arret = newHoraire(0, 0, 0)
-    return &p
-}
-
-func lecteur (nom string){
+func lecteur(nom string, c chan string) {
 	// open the file
-    file, err := os.Open("./ressources"+nom+".txt")
+	file, err := os.Open("./ressources/" + nom + ".txt")
 
-    //handle errors while opening
-    if err != nil {
-        log.Fatalf("Error when opening file: %s", err)
-    }
+	//handle errors while opening
+	if err != nil {
+		log.Fatalf("Error when opening file: %s", err)
+	}
 
-
-    fileScanner := bufio.NewScanner(file)
+	fileScanner := bufio.NewScanner(file)
 	first := true
-    // read line by line
-    for fileScanner.Scan() {
-		if first{
+	// read line by line
+	for fileScanner.Scan() {
+		if first {
 			first = false
-		}else{
-			fmt.Println(fileScanner.Text())
+		} else {
+			str := fileScanner.Text()
+			c <- str
 		}
-    }
-    // handle first encountered error while reading
-    if err := fileScanner.Err(); err != nil {
-        log.Fatalf("Error while reading file: %s", err)
-    }
+	}
+	// handle first encountered error while reading
+	if err := fileScanner.Err(); err != nil {
+		log.Fatalf("Error while reading file: %s", err)
+	}
 
-    file.Close()
-}
-//trip_id,arrival_time,departure_time,stop_id,stop_sequence,stop_headsign,pickup_type,drop_off_type,shape_dist_traveled
-//OCESN998F535973:2022-01-28T20:47:56Z,18:40:00,18:40:00,StopPoint:OCETGV INOUI-87471003,10,,1,0,
-
-func getArrivee(str string){
-	h := 0
-	m := 0
-	s := 0
-	for i := 0; i < len(str); i++ {
-		if(str[i]==','){
-			for j := i+1; j < i+9; j++ {
-				//intVar, err := strconv.Atoi(strVar)
-			}
-		}
-		
-	 }
+	file.Close()
 }
 
-func travailleur(ligne string){
-
+func travailleur(s chan string, id int, calc chan paquet, red chan paquet) {
+	ligne := <-s
+	sep := strings.Split(ligne, "s")
+	p := paquet{arrivee: sep[1], depart: sep[2], arret: 0}
+	fmt.Println("Travailleur ", id, " recoit ", sep[0], "...")
+	calc <- p
+	p = <-calc
+	red <- p
+	fmt.Println("Travailleur ", id, " recoit ensuite: ", sep[1], sep[2], "...")
+	travailleur(s, id, calc, red)
 }
 
-func main(){
+func calcul(calc chan paquet) {
+	for {
+		p := <-calc
+		go func(p paquet) {
+			a, _ := time.Parse("15:02:05", p.arrivee)
+			d, _ := time.Parse("15:02:05", p.depart)
+			duree := d.Sub(a).Seconds()
+			new_p := paquet{arrivee: p.arrivee, depart: p.depart, arret: int(duree)}
+			calc <- new_p
+		}(p)
+	}
+}
+
+func main() {
 	fmt.Println("Hello world !")
-	go func () {lecteur("./ressources/stop_times.txt")}()
-	for{}
+	l := make(chan string)
+	calc := make(chan paquet)
+	red := make(chan paquet)
+	go func() { lecteur("stop_times", l) }()
+	for i := 0; i < TRAVAILLEURS; i++ {
+		go func(k int) { travailleur(l, k, calc, red) }(i)
+	}
+	for {
+	}
+
 }
